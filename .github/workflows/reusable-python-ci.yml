@@ -1,0 +1,40 @@
+name: Reusable Python CI
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: '使用する Python のバージョン'
+        type: string
+        default: '3.13'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install ${{ inputs.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      # 設定変更で既存ファイルが違反になった場合も検出するため、全ファイルへ掛ける
+      - name: Run pre-commit hooks
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+      - name: Run pyright
+        run: uv run pyright
+
+      - name: Run tests
+        run: |
+          if [ -d tests ]; then
+            uv run pytest
+          fi

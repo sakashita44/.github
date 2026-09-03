@@ -1,0 +1,8 @@
+# Dependabot 設定
+version: 2
+updates:
+    # reusable workflow が参照する action の更新を受け取る
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "weekly"
