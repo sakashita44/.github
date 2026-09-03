@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       python-version:
-        description: '使用する Python のバージョン'
+        description: '.python-version が無い場合に使う Python のバージョン'
         type: string
         default: '3.13'
 
@@ -20,8 +20,15 @@ jobs:
         with:
           enable-cache: true
 
+      # プロジェクトが .python-version で版を固定していればそれに従う。
+      # 呼び出し側の入力は、ファイルを置いていないリポジトリ向けの既定値として残す
       - name: Install Python
-        run: uv python install ${{ inputs.python-version }}
+        run: |
+          if [ -f .python-version ]; then
+            uv python install
+          else
+            uv python install ${{ inputs.python-version }}
+          fi
 
       - name: Install dependencies
         run: uv sync --dev
