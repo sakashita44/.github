@@ -1,10 +1,10 @@
 # Changelog
 
-[Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) と [Semantic Versioning](https://semver.org/lang/ja/) に準拠する。
+変更を日付ごとに記録する。分類は [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に倣う。
 
-reusable workflow は `@main` 参照で全参照元へ即座に波及し、参照側は版を固定していない。変更内容は本ファイルで確認する。
+reusable workflow は `@main` 参照で全参照元へ即座に波及し、参照側は版を固定していない。参照元は自分の CI の中身が変わったことを知る手段を持たないため、変更内容は本ファイルで確認する。
 
-## [Unreleased]
+## 2026-09-03
 
 ### Added
 
