@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # プロジェクトが .nvmrc で版を固定していればそれに従う。
       # 呼び出し側の入力は、ファイルを置いていないリポジトリ向けの既定値として残す
