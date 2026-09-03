@@ -11,3 +11,7 @@ reusable workflow は `@main` 参照で全参照元へ即座に波及し、参�
 - Node と Python の reusable workflow（`reusable-node-ci.yml`、`reusable-python-ci.yml`）
 - reusable workflow が参照する action の更新を受け取る dependabot 設定
 - 本リポジトリの役割と参照関係を示す README
+
+### Changed
+
+- ランタイムの版を参照元のファイルから読むようにした。`.python-version` があれば `uv python install` がその値に従い、`.nvmrc` があればその値を `actions/setup-node` へ渡す。どちらも無い場合だけ `python-version`、`node-version` の入力値を使う。従来は入力の既定値がそのまま使われ、参照元が版を上げても CI が追従しなかった
