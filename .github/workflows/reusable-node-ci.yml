@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             # プロジェクトが .nvmrc で版を固定していればそれに従う。
             # 呼び出し側の入力は、ファイルを置いていないリポジトリ向けの既定値として残す
@@ -27,7 +27,7 @@ jobs:
                   fi
 
             - name: Setup Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v7
               with:
                   node-version: ${{ steps.node-version.outputs.value }}
                   cache: 'npm'
@@ -38,7 +38,7 @@ jobs:
             # 整形とリントは pre-commit の設定が定める。npm の依存を使う local フックがあるため、
             # npm ci の後に実行する
             - name: Setup uv
-              uses: astral-sh/setup-uv@v5
+              uses: astral-sh/setup-uv@v7
               with:
                   enable-cache: true
 
