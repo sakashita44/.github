@@ -1,51 +1,57 @@
 name: Reusable Node CI
 
 on:
-  workflow_call:
-    inputs:
-      node-version:
-        description: '.nvmrc が無い場合に使う Node.js のバージョン'
-        type: string
-        default: '24'
+    workflow_call:
+        inputs:
+            node-version:
+                description: '.nvmrc が無い場合に使う Node.js のバージョン'
+                type: string
+                default: '24'
 
 jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    lint-and-test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      # プロジェクトが .nvmrc で版を固定していればそれに従う。
-      # 呼び出し側の入力は、ファイルを置いていないリポジトリ向けの既定値として残す
-      - name: Resolve Node.js version
-        id: node-version
-        run: |
-          if [ -f .nvmrc ]; then
-            echo "value=$(tr -d ' \n\r' < .nvmrc)" >> "$GITHUB_OUTPUT"
-          else
-            echo "value=${{ inputs.node-version }}" >> "$GITHUB_OUTPUT"
-          fi
+            # プロジェクトが .nvmrc で版を固定していればそれに従う。
+            # 呼び出し側の入力は、ファイルを置いていないリポジトリ向けの既定値として残す
+            - name: Resolve Node.js version
+              id: node-version
+              run: |
+                  if [ -f .nvmrc ]; then
+                    echo "value=$(tr -d ' \n\r' < .nvmrc)" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "value=${{ inputs.node-version }}" >> "$GITHUB_OUTPUT"
+                  fi
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ steps.node-version.outputs.value }}
-          cache: 'npm'
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ steps.node-version.outputs.value }}
+                  cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Run lint
-        run: npm run lint
+            # 整形とリントは pre-commit の設定が定める。npm の依存を使う local フックがあるため、
+            # npm ci の後に実行する
+            - name: Setup uv
+              uses: astral-sh/setup-uv@v5
+              with:
+                  enable-cache: true
 
-      - name: Check format
-        run: npm run --if-present format:check
+            # 設定変更で既存ファイルが違反になった場合も検出するため、全ファイルへ掛ける。
+            # pre-push ステージのフックは対象外のため、型検査は後続の手順で実行する
+            - name: Run pre-commit hooks
+              run: uvx pre-commit run --all-files --show-diff-on-failure
 
-      - name: Run typecheck
-        run: npm run --if-present typecheck
+            - name: Run typecheck
+              run: npm run --if-present typecheck
 
-      - name: Run test
-        run: npm run test
+            - name: Run test
+              run: npm run test
 
-      - name: Run build
-        run: npm run build --if-present
+            - name: Run build
+              run: npm run build --if-present

@@ -2,7 +2,11 @@
 version: 2
 updates:
     # reusable workflow が参照する action の更新を受け取る
-    - package-ecosystem: "github-actions"
-      directory: "/"
+    - package-ecosystem: 'github-actions'
+      directory: '/'
       schedule:
-          interval: "weekly"
+          interval: 'weekly'
+      groups:
+          # update-types を指定せず major も含めて 1 PR へ集約する
+          actions:
+              patterns: ['*']
