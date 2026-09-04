@@ -35,11 +35,17 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Run lint
-              run: npm run lint
+            # 整形とリントは pre-commit の設定が定める。npm の依存を使う local フックがあるため、
+            # npm ci の後に実行する
+            - name: Setup uv
+              uses: astral-sh/setup-uv@v5
+              with:
+                  enable-cache: true
 
-            - name: Check format
-              run: npm run --if-present format:check
+            # 設定変更で既存ファイルが違反になった場合も検出するため、全ファイルへ掛ける。
+            # pre-push ステージのフックは対象外のため、型検査は後続の手順で実行する
+            - name: Run pre-commit hooks
+              run: uvx pre-commit run --all-files --show-diff-on-failure
 
             - name: Run typecheck
               run: npm run --if-present typecheck
