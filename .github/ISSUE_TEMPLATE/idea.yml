@@ -1,7 +1,7 @@
 name: アイデア
 description: 検討中の提案・アイデアの記録
-title: "[IDEA] <簡単な概要>"
-labels: ["idea"]
+title: '[IDEA] <簡単な概要>'
+labels: ['idea']
 body:
     - type: input
       id: summary
