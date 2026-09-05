@@ -12,6 +12,8 @@ reusable workflow は `@main` 参照で全参照元へ即座に波及し、参�
 
 ### Changed
 
+- CI が利用する `actions/checkout`、`astral-sh/setup-uv`、`actions/setup-node` を現行 major へ更新した
+
 - Node の CI が整形とリントを `pre-commit run --all-files` で実行するようにした。`npm run lint` と `npm run format:check` の手順を置き換えている。project-standards がフックの実行基盤を全種別で pre-commit へ統一し、検査の内容を `.pre-commit-config.yaml` が一箇所で定めるようになったため。Python の CI と手順の並びが揃い、gitleaks や YAML 構文検査など npm スクリプトが持たない検査も Node のリポジトリで走る。型検査は pre-push ステージのフックであり `run --all-files` の対象外のため、独立した手順として残す
 
 ## 2026-09-03
